@@ -21,7 +21,18 @@
                     </list>
                 </property>
             </bean>
-            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+            <!-- 使用 com.fasterxml.jackson 需要配置以下转换器 -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <!-- 返回日期格式设置 -->
+                        <property name="dateFormat">
+                            <bean class="java.text.SimpleDateFormat">
+                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
                 <property name="supportedMediaTypes">
                     <list>
                         <value>application/json;charset=UTF-8</value>

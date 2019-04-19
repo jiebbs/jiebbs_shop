@@ -12,4 +12,14 @@ import com.jiebbs.pojo.User;
 public interface IUserService {
 
     ServerResponse<User> login(String username, String password);
+
+    ServerResponse<String> register(User user);
+
+    ServerResponse<String> vaildStr(String str,String type);
+
+    ServerResponse<String> getForgetQuestion(String username);
+
+    ServerResponse<String> checkForgetAnswer(String username,String question,String answer);
+
+    ServerResponse<String> resetForgetPassword(String username,String token,String newPassword);
 }
