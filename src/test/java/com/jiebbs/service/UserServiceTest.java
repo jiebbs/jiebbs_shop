@@ -1,10 +1,10 @@
 package com.jiebbs.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jiebbs.common.Const;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.common.TokenCache;
 import com.jiebbs.pojo.User;
+import com.jiebbs.util.JsonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +22,7 @@ public class UserServiceTest {
     @Test
     public void loginTest(){
         ServerResponse resp = iUserService.login("admin2","admin2");
-        this.convertJsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
@@ -35,27 +35,27 @@ public class UserServiceTest {
         user.setQuestion("你的生日");
         user.setAnswer("1992-04-27");
         ServerResponse resp = iUserService.register(user);
-        this.convertJsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
     public void vaildStrTest(){
         ServerResponse resp = iUserService.vaildStr("admin", Const.USERNAME);
         ServerResponse resp2 = iUserService.vaildStr("jiebbs@126.com",Const.EMAIL);
-        this.convertJsonAndPrint(resp);
-        this.convertJsonAndPrint(resp2);
+        JsonUtil.convert2JsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp2);
     }
 
     @Test
     public void getForgetQuestionTest(){
         ServerResponse resp = iUserService.getForgetQuestion("admin");
-        this.convertJsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
     public void checkForgetAnswerTest(){
         ServerResponse resp = iUserService.checkForgetAnswer("admin2","我的生日","19920427");
-        this.convertJsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
@@ -63,16 +63,31 @@ public class UserServiceTest {
         this.checkForgetAnswerTest();
         String token = TokenCache.getKeyValue(TokenCache.TOKEN_PREFIX+"admin2");
         ServerResponse resp = iUserService.resetForgetPassword("admin2",token,"123456");
-        this.convertJsonAndPrint(resp);
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
-
-
-
-
-    private void convertJsonAndPrint(Object obj){
-        String json = JSONObject.toJSONString(obj);
-        System.out.println(json);
+    @Test
+    public void resetPassword(){
+        User user = new User();
+        user.setId(22);
+        user.setUsername("admin2");
+        ServerResponse resp = iUserService.resetPassword(user,"123456","admin2");
+        JsonUtil.convert2JsonAndPrint(resp);
     }
 
+    @Test
+    public void updateUserInfoTest(){
+        User user = new User();
+        user.setId(22);
+        user.setEmail("jiebbs3@126.com");
+        user.setPhone("138001380000");
+        ServerResponse resp = iUserService.updateUserInfo(user);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getInformationTest(){
+        ServerResponse resp = iUserService.getInformation(22);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
 }

@@ -1,6 +1,7 @@
-package com.jiebbs.controller;
+package com.jiebbs.controller.portal;
 
 import com.jiebbs.common.Const;
+import com.jiebbs.common.ResponseCode;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.pojo.User;
 import com.jiebbs.service.IUserService;
@@ -134,9 +135,52 @@ public class UserController {
      * @param newPassword 新密码
      * @return
      */
-    public ServerResponse resetPassword(HttpSession session,String oldPassword,String newPassword){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        //TODO 还没有完成
+    @RequestMapping(value="reset_password.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> resetPassword(HttpSession session,String oldPassword,String newPassword){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null!=currentUser){
+            return iUserService.resetPassword(currentUser,oldPassword,newPassword);
+        }
         return ServerResponse.createByErrorMessage("当前用户不在登录状态");
+    }
+
+    /**
+     * 更新用户信息接口
+     * @param session
+     * @param user
+     * @return
+     */
+    @RequestMapping(value="update_userInfo.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<User> updateUserInfo(HttpSession session,User user){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null!=currentUser){
+            //用户id和用户名不能被更改
+            user.setId(currentUser.getId());
+            ServerResponse resp = iUserService.updateUserInfo(user);
+            //更新Session中用户信息
+            if(resp.isSuccess()){
+                session.setAttribute(Const.CURRENT_USER,resp.getData());
+            }
+            return resp;
+        }
+        return ServerResponse.createByErrorMessage("当前用户不在登录状态");
+    }
+
+    /**
+     * 获取用户个人详细信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="get_userInfo.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getInformation(HttpSession session){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==currentUser){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode()
+                                                            ,"错误代码：10，用户未登录需要强制登录");
+        }
+        return iUserService.getInformation(currentUser.getId());
     }
 }

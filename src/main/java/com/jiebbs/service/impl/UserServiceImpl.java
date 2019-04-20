@@ -74,7 +74,7 @@ public class UserServiceImpl implements IUserService {
             if(StringUtils.equals(type,Const.USERNAME)){
                 vaildResult = userMapper.checkUsername(str);
                 return vaildResult>0? ServerResponse.<String>createByErrorMessage("用户名已注册"):
-                    ServerResponse.<String>createBySuccessMessage("用户名未注册");
+                        ServerResponse.<String>createBySuccessMessage("用户名未注册");
 
             }
             //校验邮箱是否存在
@@ -137,13 +137,62 @@ public class UserServiceImpl implements IUserService {
         //校验传入的token
         if(StringUtils.equals(validToken,token)){
             //对传入的密码进行MD5加密
-            String newMD5Pwd = MD5Util.MD5EncodeUtf8(newPassword);
-            int resetPwdResult = userMapper.updatePasswordByUsername(username,newMD5Pwd);
+            String MD5Password = MD5Util.MD5EncodeUtf8(newPassword);
+            int resetPwdResult = userMapper.updatePasswordByUsername(username,MD5Password);
             return resetPwdResult>0?ServerResponse.<String>createBySuccessMessage("密码重置成功")
                     :ServerResponse.<String>createByErrorMessage("出现异常，密码重置失败");
         }
 
         return ServerResponse.createByErrorMessage("Token校验失败,请重新获取");
+    }
+
+    @Override
+    public ServerResponse<String> resetPassword(User user, String oldPassword, String newPassword) {
+        //校验此当前用户旧密码
+        String MD5oldPassword = MD5Util.MD5EncodeUtf8(oldPassword);
+        int pwdCheckResult = userMapper.checkPassword(user.getId(),MD5oldPassword);
+        if(pwdCheckResult>0){
+            String MD5newPassword =MD5Util.MD5EncodeUtf8(newPassword);
+            int pwdUpdateResult = userMapper.updatePasswordByUsername(user.getUsername(),MD5newPassword);
+            return pwdUpdateResult>0?ServerResponse.<String>createBySuccessMessage("密码更新成功")
+                    :ServerResponse.<String>createByErrorMessage("密码更新失败");
+        }
+        return ServerResponse.createByErrorMessage("旧密码错误");
+    }
+
+    @Override
+    public ServerResponse<User> updateUserInfo(User user) {
+        //校验邮箱是否已被占用（校验邮箱存在，并且对应的id不是本userId，则认为是占用了）
+        int emailVaild = userMapper.checkEmailByUserId(user.getId(),user.getEmail());
+        if(emailVaild>0){
+            return ServerResponse.createByErrorMessage("邮箱已被占用");
+        }
+        //创建更新的中间对象，避免不必要字段被更新
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setAnswer(user.getAnswer());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setPhone(user.getPhone());
+
+        //通过校验后更新用户信息
+        int infoUpdateResult = userMapper.updateByPrimaryKeySelective(user);
+        if(infoUpdateResult>0){
+            //更新成功后，返回新的用户信息
+            User newUserInfo = userMapper.selectByPrimaryKey(user.getId());
+            return ServerResponse.createBySuccessMessageAndData("用户信息更新成功",newUserInfo);
+        }
+        return ServerResponse.createByErrorMessage("用户信息更新失败");
+    }
+
+    @Override
+    public ServerResponse<User> getInformation(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user==null){
+            return ServerResponse.createByErrorMessage("查询不到当前用户");
+        }
+        user.setPassword("");
+        return ServerResponse.createBySuccessMessageAndData("查询用户信息成功",user);
     }
 
 
