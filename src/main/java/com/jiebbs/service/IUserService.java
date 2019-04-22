@@ -15,7 +15,7 @@ public interface IUserService {
 
     ServerResponse<String> register(User user);
 
-    ServerResponse<String> vaildStr(String str,String type);
+    ServerResponse<String> validStr(String str,String type);
 
     ServerResponse<String> getForgetQuestion(String username);
 
@@ -28,4 +28,6 @@ public interface IUserService {
     ServerResponse<User> updateUserInfo(User user);
 
     ServerResponse<User> getInformation(Integer userId);
+
+    ServerResponse<String> checkAdminRole(User user);
 }

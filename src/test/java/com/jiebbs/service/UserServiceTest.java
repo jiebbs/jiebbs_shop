@@ -39,9 +39,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void vaildStrTest(){
-        ServerResponse resp = iUserService.vaildStr("admin", Const.USERNAME);
-        ServerResponse resp2 = iUserService.vaildStr("jiebbs@126.com",Const.EMAIL);
+    public void validStrTest(){
+        ServerResponse resp = iUserService.validStr("admin", Const.USERNAME);
+        ServerResponse resp2 = iUserService.validStr("jiebbs@126.com",Const.EMAIL);
         JsonUtil.convert2JsonAndPrint(resp);
         JsonUtil.convert2JsonAndPrint(resp2);
     }

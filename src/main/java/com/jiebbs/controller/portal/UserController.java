@@ -71,10 +71,10 @@ public class UserController {
      * @param type
      * @return
      */
-    @RequestMapping(value="vaild_str.do",method = RequestMethod.POST)
+    @RequestMapping(value="valid_str.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> vaildStr(String str,String type){
-        return iUserService.vaildStr(str,type);
+    public ServerResponse<String> validStr(String str,String type){
+        return iUserService.validStr(str,type);
     }
 
     /**
@@ -173,7 +173,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value="get_userInfo.do",method = RequestMethod.POST)
+    @RequestMapping(value="get_userDetail.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse getInformation(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);

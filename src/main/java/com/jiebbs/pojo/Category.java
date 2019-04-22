@@ -1,7 +1,10 @@
 package com.jiebbs.pojo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Category {
     private Integer id;
 
