@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 商品分类接口
@@ -89,7 +90,7 @@ public class CategoryManagerController {
      * @param categoryId
      * @return
      */
-    @RequestMapping(value = "get_child_parallel_category.do",method = RequestMethod.GET)
+    @RequestMapping(value = "get_child_category.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<List<Category>> getChildParallelCategory(HttpSession session,
                  @RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
@@ -108,5 +109,29 @@ public class CategoryManagerController {
         return resp;
     }
 
+    /**
+     * 递归获取商品分类节点
+     * @param session
+     * @param categoryId
+     * @return
+     */
+    @RequestMapping(value = "get_child_deep_category.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<Set<Category>> getChildDeepCategory(HttpSession session,
+                @RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
 
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,需要进行登录");
+        }
+        //判断用户是否有管理员权限
+        ServerResponse roleValid = iUserService.checkAdminRole(user);
+        if(!roleValid.isSuccess()){
+            return roleValid;
+        }
+
+        //递归查询给定categoryId下的所有子节点
+        return iCategoryService.getChildDeepCategory(categoryId);
+    }
 }

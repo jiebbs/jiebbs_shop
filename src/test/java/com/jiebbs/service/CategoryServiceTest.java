@@ -36,4 +36,11 @@ public class CategoryServiceTest {
         ServerResponse resp = iCategoryService.getChildParallelCategory(100001);
         JsonUtil.convert2JsonAndPrint(resp);
     }
+
+    @Test
+    public void getChildDeepCategoryTest(){
+
+        ServerResponse resp = iCategoryService.getChildDeepCategory(0);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
 }

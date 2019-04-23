@@ -4,6 +4,7 @@ import com.jiebbs.common.ServerResponse;
 import com.jiebbs.pojo.Category;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ICategoryService {
 
@@ -12,4 +13,6 @@ public interface ICategoryService {
     ServerResponse<String> setCategoryName(Integer catetoryId,String newCategoryName);
 
     ServerResponse<List<Category>> getChildParallelCategory(Integer categoryId);
+
+    ServerResponse<Set<Category>> getChildDeepCategory(Integer categoryId);
 }

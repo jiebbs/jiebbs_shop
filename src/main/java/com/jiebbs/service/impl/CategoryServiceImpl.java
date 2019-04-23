@@ -1,5 +1,6 @@
 package com.jiebbs.service.impl;
 
+import com.google.common.collect.Sets;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.dao.CategoryMapper;
 import com.jiebbs.pojo.Category;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service("iCategoryService")
 public class CategoryServiceImpl implements ICategoryService {
@@ -72,6 +74,45 @@ public class CategoryServiceImpl implements ICategoryService {
             return ServerResponse.createBySuccessMessageAndData("获取平级子节点成功",categoryList);
         }
         return ServerResponse.createByErrorMessage("品类不存在或已被删除");
+    }
+
+    @Override
+    public ServerResponse<Set<Category>> getChildDeepCategory(Integer categoryId){
+        //调用递归方法获取子节点
+        if(null==categoryId){
+            return ServerResponse.createByErrorMessage("传递参数错误，categoryId不能为空");
+        }
+        //使用guava集合工具类创建存储递归结果的Set集合
+        Set<Category> categorySet = Sets.newHashSet();
+        this.findChildCategory(categorySet,categoryId);
+        if(CollectionUtils.isEmpty(categorySet)){
+            return ServerResponse.createBySuccessMessage("该分类下没有子分类");
+        }
+        return ServerResponse.createBySuccessMessageAndData("查询该分类下的所有子分类成功",categorySet);
+    }
+
+
+    /**
+     * 递归算法获取分类子节点
+     * @param categorySet 存放分类的Set集合
+     * @param categoryId 存放分类的ID
+     * @return
+     */
+    private Set<Category> findChildCategory(Set<Category> categorySet,Integer categoryId){
+        //查询子节点是否存在
+        Category category = categoryMapper.selectByPrimaryKey(categoryId);
+        if(null!=category){
+            //存在则添加到Set中
+            categorySet.add(category);
+        }
+        //查询该分类下所有子分类（由于mybatis的特性，即便查不到数据也不会返回null，所有无需进行空校验）
+        List<Category> categoryList = categoryMapper.selectChildParallelCategoryByParentId(categoryId);
+        //此处递归查询分类
+        for(Category cate:categoryList){
+            findChildCategory(categorySet,cate.getId());
+        }
+        //递归完成后，返回Set集合
+        return categorySet;
     }
 
 }
