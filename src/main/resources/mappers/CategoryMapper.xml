@@ -120,4 +120,11 @@
     from mmall_category
     where parent_id = #{parentId}
   </select>
+
+  <select id="selectParentCategoryId" parameterType="int" resultType="int">
+    select
+    parent_id
+    from mmall_category
+    where id = #{categoryId}
+  </select>
 </mapper>

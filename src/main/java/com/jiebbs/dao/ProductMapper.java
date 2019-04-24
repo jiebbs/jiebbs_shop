@@ -1,6 +1,9 @@
 package com.jiebbs.dao;
 
 import com.jiebbs.pojo.Product;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ProductMapper {
     int deleteByPrimaryKey(Integer id);
@@ -15,4 +18,9 @@ public interface ProductMapper {
 
     int updateByPrimaryKey(Product record);
 
+    int updateProductStatusById(@Param("productId") Integer productId, @Param("status") Integer status);
+
+    List<Product> getProductsByCategoryId();
+
+    List<Product> searchProductsByIdName(@Param("productId") Integer productId,@Param("productName") String productName);
 }

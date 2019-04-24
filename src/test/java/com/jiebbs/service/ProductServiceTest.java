@@ -20,15 +20,41 @@ public class ProductServiceTest {
     private IProductService iProductService;
 
     @Test
-    public void productSaveOrUpdate(){
+    public void productSaveOrUpdateTest(){
 
         Product product = new Product();
-        product.setName("123");
+        product.setId(30);
+        product.setName("321");
         product.setCategoryId(0);
         product.setPrice(new BigDecimal(1));
         product.setStock(11);
 
         ServerResponse resp = iProductService.productSaveOrUpdate(product);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void setProductStatusTest(){
+
+        ServerResponse resp = iProductService.setProductStatus(30,3);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getProductDetailTest(){
+        ServerResponse resp = iProductService.getProductDetail(30);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getProductsTest(){
+        ServerResponse resp = iProductService.getProducts(1,10);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void searchProductsByIdNameTest(){
+        ServerResponse resp = iProductService.searchProducts(null,"冰箱",1,10);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 }

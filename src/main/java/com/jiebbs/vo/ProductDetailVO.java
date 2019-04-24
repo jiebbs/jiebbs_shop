@@ -1,16 +1,17 @@
-package com.jiebbs.pojo;
+package com.jiebbs.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * 产品详情对象VO
+ * @author weijie
+ * @version 1.0 2019-04-24
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Product {
-
-    //用于校验产品状态
-    private static Integer[] statusArr = new Integer[]{1,2,3};
+public class ProductDetailVO {
 
     private Integer id;
 
@@ -36,24 +37,9 @@ public class Product {
 
     private Date updateTime;
 
-    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status, Date createTime, Date updateTime) {
-        this.id = id;
-        this.categoryId = categoryId;
-        this.name = name;
-        this.subtitle = subtitle;
-        this.mainImage = mainImage;
-        this.subImages = subImages;
-        this.detail = detail;
-        this.price = price;
-        this.stock = stock;
-        this.status = status;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
+    private String imageHost;
 
-    public Product() {
-        super();
-    }
+    private Integer parentCategoryId;
 
     public Integer getId() {
         return id;
@@ -76,7 +62,7 @@ public class Product {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     public String getSubtitle() {
@@ -84,7 +70,7 @@ public class Product {
     }
 
     public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle == null ? null : subtitle.trim();
+        this.subtitle = subtitle;
     }
 
     public String getMainImage() {
@@ -92,7 +78,7 @@ public class Product {
     }
 
     public void setMainImage(String mainImage) {
-        this.mainImage = mainImage == null ? null : mainImage.trim();
+        this.mainImage = mainImage;
     }
 
     public String getSubImages() {
@@ -100,7 +86,7 @@ public class Product {
     }
 
     public void setSubImages(String subImages) {
-        this.subImages = subImages == null ? null : subImages.trim();
+        this.subImages = subImages;
     }
 
     public String getDetail() {
@@ -108,7 +94,7 @@ public class Product {
     }
 
     public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+        this.detail = detail;
     }
 
     public BigDecimal getPrice() {
@@ -151,5 +137,19 @@ public class Product {
         this.updateTime = updateTime;
     }
 
-    public static boolean checkStatus(Integer status){ return Arrays.asList(statusArr).contains(status); }
+    public String getImageHost() {
+        return imageHost;
+    }
+
+    public void setImageHost(String imageHost) {
+        this.imageHost = imageHost;
+    }
+
+    public Integer getParentCategoryId() {
+        return parentCategoryId;
+    }
+
+    public void setParentCategoryId(Integer parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
+    }
 }

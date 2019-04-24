@@ -21,4 +21,6 @@ public interface CategoryMapper {
     int checkCategory(@Param("categoryId") Integer categoryId);
 
     List<Category> selectChildParallelCategoryByParentId(@Param("parentId") Integer categoryId);
+
+    int selectParentCategoryId(@Param("categoryId") Integer categoryId);
 }

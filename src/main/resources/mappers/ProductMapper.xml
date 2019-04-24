@@ -22,7 +22,7 @@
     create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from mmall_product
     where id = #{id,jdbcType=INTEGER}
@@ -76,8 +76,8 @@
       <if test="status != null" >
         status,
       </if>
-        create_time,
-        update_time,
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -110,8 +110,8 @@
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
-        now(),
-        now(),
+      now(),
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.jiebbs.pojo.Product" >
@@ -147,7 +147,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-        update_time = now(),
+      update_time = now(),
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -162,10 +162,35 @@
       price = #{price,jdbcType=DECIMAL},
       stock = #{stock,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
-      create_time = now(),
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <update id="updateProductStatusById" parameterType="map">
+    update mmall_product
+    set status = #{status}
+    where id = #{productId}
+  </update>
 
+  <select id="getProductsByCategoryId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_product
+  </select>
+
+  <select id="searchProductsByIdName" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_product
+    <where>
+      <if test="productId!=null">
+        and id=#{productId}
+      </if>
+      <if test="productName!=null">
+        <!-- 处理模糊查询要不在传入参数的时候拼接好字符串,要不就在sql语句中拼接好 -->
+        and name like concat('%',#{productName},'%')
+      </if>
+    </where>
+  </select>
 </mapper>
