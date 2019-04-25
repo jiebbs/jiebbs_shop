@@ -6,6 +6,11 @@ import com.jiebbs.pojo.Product;
 import com.jiebbs.vo.ProductDetailVO;
 import com.jiebbs.vo.ProductListVO;
 
+/**
+ * 商品服务接口
+ * @author weijie
+ * @version v1.0 2019-04-25
+ */
 public interface IProductService {
 
     ServerResponse<String> productSaveOrUpdate(Product product);

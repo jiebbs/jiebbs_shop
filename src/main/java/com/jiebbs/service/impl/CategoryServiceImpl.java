@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 商品品类模块接口实现类
+ * @author weijie
+ * @version v1.0 2019-04-25
+ */
 @Service("iCategoryService")
 public class CategoryServiceImpl implements ICategoryService {
 

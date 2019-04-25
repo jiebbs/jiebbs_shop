@@ -19,6 +19,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 产品模块服务层实现类
+ * @author weijie
+ * @version v1.0 2019-04-25
+ */
 @Service("iProductService")
 public class ProductServiceImpl implements IProductService {
 
