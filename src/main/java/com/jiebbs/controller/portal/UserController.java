@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
- * 用户前台模块接口
+ * 前台用户模块接口
  * @author weijie
  * @version 1.0 2019-04-17
  */

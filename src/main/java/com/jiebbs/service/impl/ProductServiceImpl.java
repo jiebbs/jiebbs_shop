@@ -75,7 +75,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ServerResponse<ProductDetailVO> getProductDetail(Integer productId){
+    public ServerResponse<ProductDetailVO> getProductDetailBackend(Integer productId){
         //校验参数
         if(null==productId){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
@@ -128,6 +128,23 @@ public class ProductServiceImpl implements IProductService {
 
         PageInfo<ProductListVO> pageResult = new PageInfo<>(productListVOList);
         return ServerResponse.createBySuccessMessageAndData("查询商品成功",pageResult);
+    }
+
+
+    @Override
+    public ServerResponse<ProductDetailVO> getProductDetailProtal(Integer productId){
+        if(null==productId){
+            return ServerResponse.createByErrorMessage("参数传递错误，productId不能为空");
+        }
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if(null==product){
+            return ServerResponse.createByErrorMessage("传入参数错误,查询商品不存在");
+        }
+        if(product.getStatus()!=1){
+            return ServerResponse.createByErrorMessage("商品已下架或者已删除");
+        }
+        ProductDetailVO productDetailVO =  assembleProductDetailVO(product);
+        return ServerResponse.createBySuccessMessageAndData("获取产品详情成功",productDetailVO);
     }
 
 

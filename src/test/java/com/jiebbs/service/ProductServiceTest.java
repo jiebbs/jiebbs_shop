@@ -36,13 +36,13 @@ public class ProductServiceTest {
     @Test
     public void setProductStatusTest(){
 
-        ServerResponse resp = iProductService.setProductStatus(30,3);
+        ServerResponse resp = iProductService.setProductStatus(30,2);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
-    public void getProductDetailTest(){
-        ServerResponse resp = iProductService.getProductDetail(30);
+    public void getProductDetailBackendTest(){
+        ServerResponse resp = iProductService.getProductDetailBackend(30);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 
@@ -55,6 +55,12 @@ public class ProductServiceTest {
     @Test
     public void searchProductsByIdNameTest(){
         ServerResponse resp = iProductService.searchProducts(null,"冰箱",1,10);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getProductDetailPortal(){
+        ServerResponse resp = iProductService.getProductDetailProtal(26);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 }

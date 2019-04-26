@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 商品分类接口
+ * 后台商品分类接口
  * @author weijie
  * @version 1.0 2019-04-20
  */

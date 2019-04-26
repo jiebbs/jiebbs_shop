@@ -102,7 +102,7 @@ public class FTPUtil {
         if(connectFtpServer(this.ip,this.port,this.ftpUsername,this.ftpPassword)){
             try {
                 //更改工作目录
-                //ftpClient.changeWorkingDirectory(remotePath);
+                ftpClient.changeWorkingDirectory(remotePath);
                 //设置缓冲区
                 ftpClient.setBufferSize(1024);
                 //设置编码

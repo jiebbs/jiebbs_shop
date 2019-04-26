@@ -193,4 +193,12 @@
       </if>
     </where>
   </select>
+
+  <select id="checkProductStatus" parameterType="int" resultType="int">
+    select
+    status
+    from mmall_product
+    where id = #{productId}
+  </select>
+
 </mapper>
