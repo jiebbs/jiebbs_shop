@@ -158,7 +158,7 @@ public class ProductManagerController {
         if(null==productId&&null==productName){
             return iProductService.getProducts(pageNum,pageSize);
         }
-        return iProductService.searchProducts(productId,productName,pageNum,pageSize);
+        return iProductService.searchProductsBackend(productId,productName,pageNum,pageSize);
     }
 
     /**
@@ -226,4 +226,7 @@ public class ProductManagerController {
         response.addHeader("Access-Control-Allow-Headers","X-File-Name");
         return resultMap;
     }
+
+
+
 }

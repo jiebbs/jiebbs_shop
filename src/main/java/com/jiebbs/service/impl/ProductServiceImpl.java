@@ -3,11 +3,13 @@ package com.jiebbs.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.jiebbs.common.Const;
 import com.jiebbs.common.ResponseCode;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.dao.CategoryMapper;
 import com.jiebbs.dao.ProductMapper;
 import com.jiebbs.pojo.Product;
+import com.jiebbs.service.ICategoryService;
 import com.jiebbs.service.IProductService;
 import com.jiebbs.util.PropertiesUtil;
 import com.jiebbs.vo.ProductDetailVO;
@@ -17,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,6 +35,9 @@ public class ProductServiceImpl implements IProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Resource(name="iCategoryService")
+    private ICategoryService iCategoryService;
 
     @Override
     public ServerResponse<String> productSaveOrUpdate(Product product){
@@ -111,7 +117,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ServerResponse<PageInfo<ProductListVO>> searchProducts(Integer productId,String productName,Integer pageNum, Integer pageSize){
+    public ServerResponse<PageInfo<ProductListVO>> searchProductsBackend(Integer productId,String productName,Integer pageNum, Integer pageSize){
         //使用pageHelper进行分页
         //初始化pageHelper(同时默认使用根据产品id的升序)
         PageHelper.startPage(pageNum,pageSize,"id asc");
@@ -140,12 +146,51 @@ public class ProductServiceImpl implements IProductService {
         if(null==product){
             return ServerResponse.createByErrorMessage("传入参数错误,查询商品不存在");
         }
-        if(product.getStatus()!=1){
+        if(product.getStatus()!= Const.ProductStatusEnum.ON_SALE.getStatus()){
             return ServerResponse.createByErrorMessage("商品已下架或者已删除");
         }
         ProductDetailVO productDetailVO =  assembleProductDetailVO(product);
         return ServerResponse.createBySuccessMessageAndData("获取产品详情成功",productDetailVO);
     }
+
+    @Override
+    public ServerResponse<PageInfo<ProductListVO>> searchProductsPortal(Integer categoryId,String productName,Integer pageNum, Integer pageSize,String orderBy){
+        List<Integer> categoryIdList = null;
+        //查询节点下所有子节点
+        if(categoryId!=null){
+            categoryIdList = iCategoryService.getChildDeepCategory(categoryId).getData();
+            //将搜索的节点也加入到List，因为当前节点下也可能会有商品
+            categoryIdList.add(categoryId);
+        }
+        //使用pageHelper进行分页
+        //初始化pageHelper(使用传入的条件对产品价格进行排序)
+        //这些是为PageHelper使用aop准备的，如果不在查询语句前声明完成，并且执行的sql没有紧随其后aop就不会加入到这个执行的sql当中
+        PageHelper.startPage(pageNum,pageSize);
+        if(StringUtils.isNotBlank(orderBy)){
+            //校验排序条件
+            if(Const.ProductOrderByCondition.PRICE_ASE_DESC.contains(orderBy)){
+                //拼接排序条件
+                String[] orderByArray = orderBy.split("_");
+                String orderByCondition = new StringBuffer().append(orderByArray[0]).append(" ").append(orderByArray[1]).toString();
+                PageHelper.orderBy(orderByCondition);
+            }
+        }
+        //查询节点ID符合的所有
+        List<Product> productList = productMapper.searchProductsByCategoryIdsName(categoryIdList,productName);
+        if(CollectionUtils.isEmpty(productList)){
+            return ServerResponse.createBySuccessMessage("查询不到匹配条件的商品");
+        }
+
+        //转换集合中的product为productListVO
+        List<ProductListVO> productListVOList = Lists.newArrayList();
+        for(Product product:productList){
+            productListVOList.add(assembleProductListVO(product));
+        }
+
+        PageInfo<ProductListVO> pageResult = new PageInfo<>(productListVOList);
+        return ServerResponse.createBySuccessMessageAndData("查询商品成功",pageResult);
+    }
+
 
 
 

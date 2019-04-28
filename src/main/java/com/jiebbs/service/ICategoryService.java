@@ -4,7 +4,6 @@ import com.jiebbs.common.ServerResponse;
 import com.jiebbs.pojo.Category;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 产品分类接口
@@ -19,5 +18,5 @@ public interface ICategoryService {
 
     ServerResponse<List<Category>> getChildParallelCategory(Integer categoryId);
 
-    ServerResponse<Set<Category>> getChildDeepCategory(Integer categoryId);
+    ServerResponse<List<Integer>> getChildDeepCategory(Integer categoryId);
 }

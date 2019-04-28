@@ -201,4 +201,21 @@
     where id = #{productId}
   </select>
 
+  <select id="searchProductsByCategoryIdsName" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_product
+    where status = 1
+    <if test="categoryIdList!=null">
+      and category_id in
+      <foreach collection="categoryIdList" item="categoryId" index="index" open="(" close=")" separator=",">
+        #{categoryId}
+      </foreach>
+    </if>
+    <if test="productName!=null">
+      <!-- 处理模糊查询要不在传入参数的时候拼接好字符串,要不就在sql语句中拼接好 -->
+      and name like concat('%',#{productName},'%')
+    </if>
+  </select>
+
 </mapper>

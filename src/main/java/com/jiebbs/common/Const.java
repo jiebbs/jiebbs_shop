@@ -1,5 +1,9 @@
 package com.jiebbs.common;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 /**
  * 常量类
  * @author weijie
@@ -22,4 +26,35 @@ public class Const {
         int ROLE_CUSTOMER = 0; //普通用户
         int ROLE_ADMIN =1; //管理员用户
     }
+
+    /**
+     * 排序条件常量
+     */
+    public interface ProductOrderByCondition{
+        Set<String> PRICE_ASE_DESC = Sets.newHashSet("price_asc","price_desc");
+    }
+
+    public enum ProductStatusEnum{
+        ON_SALE(1, "已上架"),
+        NOT_ON_SALE(2, "已下架"),
+        DELETED(3, "已删除");
+
+        private int status;
+        private String desc;
+
+        ProductStatusEnum( int status, String desc){
+            this.status = status;
+            this.desc = desc;
+        }
+
+        public int getStatus () {
+            return status;
+        }
+
+        public String getDesc () {
+            return desc;
+         }
+    }
+
 }
+

@@ -1,5 +1,6 @@
 package com.jiebbs.service.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.dao.CategoryMapper;
@@ -82,7 +83,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ServerResponse<Set<Category>> getChildDeepCategory(Integer categoryId){
+    public ServerResponse<List<Integer>> getChildDeepCategory(Integer categoryId){
         //调用递归方法获取子节点
         if(null==categoryId){
             return ServerResponse.createByErrorMessage("传递参数错误，categoryId不能为空");
@@ -93,7 +94,12 @@ public class CategoryServiceImpl implements ICategoryService {
         if(CollectionUtils.isEmpty(categorySet)){
             return ServerResponse.createBySuccessMessage("该分类下没有子分类");
         }
-        return ServerResponse.createBySuccessMessageAndData("查询该分类下的所有子分类成功",categorySet);
+        //返回集合不为空就将categoryId存放字List中并返回
+        List<Integer> categoryIdList = Lists.newArrayList();
+        for(Category category:categorySet){
+            categoryIdList.add(category.getId());
+        }
+        return ServerResponse.createBySuccessMessageAndData("查询该分类下的所有子分类成功",categoryIdList);
     }
 
 

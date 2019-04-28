@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 后台商品分类接口
@@ -117,7 +116,7 @@ public class CategoryManagerController {
      */
     @RequestMapping(value = "get_child_deep_category.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<Set<Category>> getChildDeepCategory(HttpSession session,
+    public ServerResponse<List<Integer>> getChildDeepCategory(HttpSession session,
                 @RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
 
         //校验用户登录

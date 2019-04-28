@@ -25,4 +25,6 @@ public interface ProductMapper {
     List<Product> searchProductsByIdName(@Param("productId") Integer productId,@Param("productName") String productName);
 
     int checkProductStatus(Integer productId);
+
+    List<Product> searchProductsByCategoryIdsName(@Param("categoryIdList")List<Integer> categoryId,@Param("productName")String productName);
 }
