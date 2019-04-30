@@ -34,6 +34,14 @@ public class Const {
         Set<String> PRICE_ASE_DESC = Sets.newHashSet("price_asc","price_desc");
     }
 
+    /**
+     * 购物车商品勾选状态常量
+     */
+    public interface CartProductStatus{
+        public static final Integer CHECKED = 1;
+        public static final Integer NOT_CHECKED = 0;
+    }
+
     public enum ProductStatusEnum{
         ON_SALE(1, "已上架"),
         NOT_ON_SALE(2, "已下架"),

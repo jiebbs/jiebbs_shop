@@ -45,10 +45,9 @@ public class CartController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,需要进行登录");
         }
 
-        //查询产品是否
-
-
-
-        return null;
+        return  iCartService.addProduct(user.getId(),productId,productCount);
     }
+
+
+
 }
