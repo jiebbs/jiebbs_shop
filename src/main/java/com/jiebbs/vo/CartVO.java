@@ -1,25 +1,50 @@
 package com.jiebbs.vo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
- * 通用的购物车对象(结合产品和购物车的对象)
+ * 购物车通用对象（包含CartProductVO）
  * @author weijie
- * @version v1.0 2019-04-30
+ * @version v1.0 2019-05-05
  */
 public class CartVO {
 
-    private Integer id;
-    private Integer userId;
-    private Integer productId;
-    private Integer quantity;
-    private String productName;
-    private String productSubtitle;
-    private String productMainImage;
-    private BigDecimal productPrice;
-    private Integer productStatus;
-    private BigDecimal productTotalPrice;
-    private Integer productStock;
-    private Integer productChecked;
+    private List<CartProductVO> cartProductVOList;
+    private BigDecimal cartTotalPrice;
+    private Boolean allChecked; //是否全部都被勾选
+    private String imageHost;
 
+
+    public List<CartProductVO> getCartProductVOList() {
+        return cartProductVOList;
+    }
+
+    public void setCartProductVOList(List<CartProductVO> cartProductVOList) {
+        this.cartProductVOList = cartProductVOList;
+    }
+
+    public BigDecimal getCartTotalPrice() {
+        return cartTotalPrice;
+    }
+
+    public void setCartTotalPrice(BigDecimal cartTotalPrice) {
+        this.cartTotalPrice = cartTotalPrice;
+    }
+
+    public Boolean getAllChecked() {
+        return allChecked;
+    }
+
+    public void setAllChecked(Boolean allChecked) {
+        this.allChecked = allChecked;
+    }
+
+    public String getImageHost() {
+        return imageHost;
+    }
+
+    public void setImageHost(String imageHost) {
+        this.imageHost = imageHost;
+    }
 }

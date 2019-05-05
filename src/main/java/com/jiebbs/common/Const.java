@@ -38,8 +38,11 @@ public class Const {
      * 购物车商品勾选状态常量
      */
     public interface CartProductStatus{
-        public static final Integer CHECKED = 1;
-        public static final Integer NOT_CHECKED = 0;
+        Integer CHECKED = 1;
+        Integer NOT_CHECKED = 0;
+
+        String LIMIT_QUANTITY_FAIL = "LIMIT_QUANTITY_FAIL";
+        String LIMIT_QUANTITY_SUCCESS = "LIMIT_QUANTITY_SUCCESS";
     }
 
     public enum ProductStatusEnum{

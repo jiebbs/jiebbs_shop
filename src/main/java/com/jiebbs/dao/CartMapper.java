@@ -3,6 +3,8 @@ package com.jiebbs.dao;
 import com.jiebbs.pojo.Cart;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface CartMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -17,4 +19,10 @@ public interface CartMapper {
     int updateByPrimaryKey(Cart record);
 
     Cart selectCartByUserIdProductId(@Param("userId") Integer userId,@Param("productId") Integer productId);
+
+    List<Cart> selectCartByUserId(Integer userId);
+
+    int selectCartCheckedStatusByUserId(Integer userId);
+
+    int deleteCartByUserIdProductId(@Param("userId") Integer userId,@Param("productId") Integer productId);
 }
