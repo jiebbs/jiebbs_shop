@@ -23,14 +23,26 @@ public class CartServiceTest {
     }
 
     @Test
-    public void updateProduct(){
+    public void updateProductTest(){
         ServerResponse resp = iCartService.updateProduct(22,26,100,0);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 
     @Test
-    public void deleteProduct(){
-        ServerResponse resp = iCartService.deleteProduct(22,26);
+    public void deleteProductTest(){
+        ServerResponse resp = iCartService.deleteProduct(22,"26");
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getCartListTest(){
+        ServerResponse resp = iCartService.getCartList(22);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void countCartProductTest(){
+        ServerResponse resp = iCartService.countCartProduct(29);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 }

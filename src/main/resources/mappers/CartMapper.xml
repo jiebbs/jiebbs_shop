@@ -130,11 +130,23 @@
     and user_id = #{userId}
   </select>
   
-  <delete id="deleteCartByUserIdProductId" parameterType="map">
+  <delete id="deleteCartByUserIdProductIds" parameterType="map">
     delete
     from mmall_cart
-    where product_id = #{productId}
-    and user_id = #{userId}
+    where user_id = #{userId}
+    <if test="productIds!= null">
+      and product_id in
+      <foreach collection="productIds" item="productId" index="index" open="(" separator="," close=")">
+        #{productId}
+      </foreach>
+    </if>
   </delete>
   
+  <select id="selectCartProductCountByUserId" parameterType="int" resultType="int">
+    select
+    <!-- 防止返回null -->
+    ifnull (sum(quantity),0) as count
+    from mmall_cart
+    where user_id = #{userId}
+  </select>
 </mapper>

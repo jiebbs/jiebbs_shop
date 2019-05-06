@@ -67,14 +67,16 @@ public class CartController {
     }
 
     /**
+     * 删除购物车产品接口
      * 根据传入的一个或多个产品ID删除产品
+     * id使用字符串输入,id与id直接用","分隔
      * @param session
-     * @param productIdArray
+     * @param productIds
      * @return
      */
     @RequestMapping(value = "delete_product.do",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<CartVO> delete(HttpSession session, Integer... productIds){
+    public ServerResponse<CartVO> delete(HttpSession session, String productIds){
         //校验用户登录
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(null==user){
@@ -82,4 +84,38 @@ public class CartController {
         }
         return iCartService.deleteProduct(user.getId(),productIds);
     }
+
+    /**
+     * 列出购物车产品接口
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "list_products.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<CartVO> list(HttpSession session){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,需要进行登录");
+        }
+        return iCartService.getCartList(user.getId());
+    }
+
+    /**
+     * 统计用户购物车产品数量接口
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "count_cart_product.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<Integer> countCartProduct(HttpSession session){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user){
+            return ServerResponse.createBySuccessData(0);
+        }
+        return iCartService.countCartProduct(user.getId());
+    }
+
 }
+

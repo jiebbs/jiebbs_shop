@@ -31,7 +31,8 @@
     delete from mmall_shipping
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.jiebbs.pojo.Shipping" >
+  <!-- 使Mybatis自动返回插入数据后生成的id -->
+  <insert id="insert" parameterType="com.jiebbs.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
     insert into mmall_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 
       receiver_city, receiver_district, receiver_address, 
@@ -76,12 +77,8 @@
       <if test="receiverZip != null" >
         receiver_zip,
       </if>
-      <if test="createTime != null" >
         create_time,
-      </if>
-      <if test="updateTime != null" >
         update_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -114,12 +111,8 @@
       <if test="receiverZip != null" >
         #{receiverZip,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
         now(),
-      </if>
-      <if test="updateTime != null" >
         now(),
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.jiebbs.pojo.Shipping" >
@@ -155,9 +148,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
         update_time = now(),
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -176,4 +167,12 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <delete id="deleteByUserIdShippingId" parameterType="map">
+    delete
+    from mmall_shipping
+    where user_id = #{userId}
+    and id = #{shippingId}
+  </delete>
+
 </mapper>

@@ -81,27 +81,31 @@ public class CartServiceImpl implements ICartService {
     }
 
 
-    public ServerResponse<CartVO> deleteProduct(Integer userId,Integer... productIds){
+    public ServerResponse<CartVO> deleteProduct(Integer userId,String productIds){
+        List<String> productIdList = Lists.newArrayList(productIds.split(","));
         //产品参数校验
-        if(CollectionUtils.isEmpty(Arrays.asList(productIds))){
+        if(CollectionUtils.isEmpty(productIdList)){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-        //校验之前该用户是否有此产品
-        for(Integer productId:productIds){
-            Cart cart = cartMapper.selectCartByUserIdProductId(userId,productId);
-            int cartResult = 0;
-            if(null!=cart){
-                cartResult = cartMapper.deleteCartByUserIdProductId(userId,productId);
-                if(cartResult==0){
-                    return ServerResponse.createByErrorMessage("产品ID："+productId+"删除失败");
-                }
-            }else {
-                return ServerResponse.createByErrorMessage("产品ID："+productId+"删除失败");
-            }
+        //TODO 这里可能要考量一下是否加入产品是否已经删除的校验（个人认为可加可不加）
+        //删除
+        int deleteResult = cartMapper.deleteCartByUserIdProductIds(userId,productIdList);
+        if(deleteResult>0){
+            CartVO cartVO = assembleLimitCartVO(userId);
+            return ServerResponse.createBySuccessMessageAndData("删除产品成功",cartVO);
         }
-        CartVO cartVO = assembleLimitCartVO(userId);
-        return ServerResponse.createBySuccessMessageAndData("删除产品成功",cartVO);
+        return ServerResponse.createByErrorMessage("删除产品失败");
+    }
 
+
+    public ServerResponse<CartVO> getCartList(Integer userId){
+        CartVO cartVO = assembleLimitCartVO(userId);
+        return ServerResponse.createBySuccessMessageAndData("获取购物车列表成功",cartVO);
+    }
+
+    public ServerResponse<Integer> countCartProduct(Integer userId){
+        int count = cartMapper.selectCartProductCountByUserId(userId);
+        return ServerResponse.createBySuccessData(count);
     }
 
 
