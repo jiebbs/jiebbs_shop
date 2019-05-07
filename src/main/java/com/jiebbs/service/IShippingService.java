@@ -1,7 +1,9 @@
 package com.jiebbs.service;
 
+import com.github.pagehelper.PageInfo;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.pojo.Shipping;
+import com.jiebbs.vo.ShippingVO;
 
 /**
  * 收货地址服务接口
@@ -14,5 +16,9 @@ public interface IShippingService {
 
     ServerResponse deleteShippingAddress(Integer userId, Integer shippingId);
 
-    ServerResponse updateShippingAddress(Integer userId, Integer shippingId,Shipping shipping);
+    ServerResponse updateShippingAddress(Integer userId, Shipping shipping);
+
+    ServerResponse getShippingAddressDetail(Integer userId,Integer shippingId);
+
+    ServerResponse<PageInfo<ShippingVO>> listShippingAddress(Integer userId, Integer pageNum, Integer pageSize);
 }

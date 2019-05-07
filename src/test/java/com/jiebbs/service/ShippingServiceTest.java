@@ -41,6 +41,7 @@ public class ShippingServiceTest {
     @Test
     public void updateShippingAddress(){
         Shipping shipping = new Shipping();
+        shipping.setId(31);
         shipping.setReceiverName("收货人名字");
         shipping.setReceiverPhone("18000000123");
         shipping.setReceiverMobile("18000000123");
@@ -49,8 +50,19 @@ public class ShippingServiceTest {
         shipping.setReceiverDistrict("石岐区");
         shipping.setReceiverAddress("朗晴轩4号");
         shipping.setReceiverZip("528433");
-        ServerResponse resp = iShippingService.updateShippingAddress(22,31,shipping);
+        ServerResponse resp = iShippingService.updateShippingAddress(22,shipping);
         JsonUtil.convert2JsonAndPrint(resp);
     }
 
+    @Test
+    public void getShippingAddressDetailTest(){
+        ServerResponse resp = iShippingService.getShippingAddressDetail(22,31);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void listShippingAddress(){
+        ServerResponse resp = iShippingService.listShippingAddress(22,1,10);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
 }
