@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 @Service("iCartService")
@@ -184,7 +183,7 @@ public class CartServiceImpl implements ICartService {
             return false;
         }
         //若查询出一条未勾选的记录则返回false
-        int result = cartMapper.selectCartCheckedStatusByUserId(userId);
+        int result = cartMapper.selectCartCheckedAllStatusByUserId(userId);
         return result==0;
     }
 }

@@ -45,6 +45,9 @@ public class Const {
         String LIMIT_QUANTITY_SUCCESS = "LIMIT_QUANTITY_SUCCESS";
     }
 
+    /**
+     * 商品状态Enum
+     */
     public enum ProductStatusEnum{
         ON_SALE(1, "已上架"),
         NOT_ON_SALE(2, "已下架"),
@@ -67,5 +70,109 @@ public class Const {
          }
     }
 
+    /**
+     * 订单状态Enum
+     */
+    public enum OrderStatusEnum{
+        CANCALED(0,"已取消"),
+        NO_PAY(10,"未支付"),
+        PAID(20,"已支付"),
+        SHIPPED(40,"已发货"),
+        ORDER_SUCCESS(50,"订单完成"),
+        ORDER_CLOSED(60,"订单关闭");
+
+        OrderStatusEnum(int code,String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        private String value;
+        private int code;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+    }
+
+    /**
+     * 支付宝回调常量
+     */
+    public interface AlipayCallback{
+        String TRADE_STATUS_WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+        String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
+
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
+    }
+
+    /**
+     * 支付平台enum
+     */
+    public enum PayPlatformEnum{
+        ALIPAY(1,"支付宝");
+
+        private int code;
+        private String platfrom;
+
+        PayPlatformEnum(int code, String platfrom) {
+            this.code = code;
+            this.platfrom = platfrom;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getPlatfrom() {
+            return platfrom;
+        }
+
+        public void setPlatfrom(String platfrom) {
+            this.platfrom = platfrom;
+        }
+    }
+
+    public enum PaymentTypeEnum{
+        PAY_ONLINE(1,"在线支付");
+        private int code;
+        private String desc;
+
+        PaymentTypeEnum(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
 }
 

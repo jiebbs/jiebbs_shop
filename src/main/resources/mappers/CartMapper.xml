@@ -16,7 +16,7 @@
     id, user_id, product_id, quantity, checked, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from mmall_cart
     where id = #{id,jdbcType=INTEGER}
@@ -51,8 +51,8 @@
       <if test="checked != null" >
         checked,
       </if>
-        create_time,
-        update_time,
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -70,8 +70,8 @@
       <if test="checked != null" >
         #{checked,jdbcType=INTEGER},
       </if>
-        now(),
-        now(),
+      now(),
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.jiebbs.pojo.Cart" >
@@ -92,7 +92,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-        update_time = now(),
+      update_time = now(),
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -106,7 +106,7 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
-  
+
   <select id="selectCartByUserIdProductId" parameterType="map" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -122,14 +122,14 @@
     where user_id = #{userId}
   </select>
 
-  <select id="selectCartCheckedStatusByUserId" parameterType="int" resultType="int">
+  <select id="selectCartCheckedAllStatusByUserId" parameterType="int" resultType="int">
     select
     count(1)
     from mmall_cart
     where checked = 0
     and user_id = #{userId}
   </select>
-  
+
   <delete id="deleteCartByUserIdProductIds" parameterType="map">
     delete
     from mmall_cart
@@ -141,7 +141,7 @@
       </foreach>
     </if>
   </delete>
-  
+
   <select id="selectCartProductCountByUserId" parameterType="int" resultType="int">
     select
     <!-- 防止返回null -->
@@ -149,4 +149,21 @@
     from mmall_cart
     where user_id = #{userId}
   </select>
+
+  <select id="selectCheckedCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_cart
+    where checked = 1
+    and user_id = #{userId}
+  </select>
+
+  <delete id="brenchDeleteCartByCartId" parameterType="list">
+    delete
+    from mmall_cart
+    where id in
+    <foreach collection="cartList" item="cart" index="index" open="(" separator="," close=")">
+        #{item.id}
+    </foreach>
+  </delete>
 </mapper>

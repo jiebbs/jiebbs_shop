@@ -1,5 +1,6 @@
 package com.jiebbs.dao;
 
+import com.alipay.api.domain.Car;
 import com.jiebbs.pojo.Cart;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,9 +23,13 @@ public interface CartMapper {
 
     List<Cart> selectCartByUserId(Integer userId);
 
-    int selectCartCheckedStatusByUserId(Integer userId);
+    int selectCartCheckedAllStatusByUserId(Integer userId);
 
     int deleteCartByUserIdProductIds(@Param("userId") Integer userId,@Param("productIds") List<String> productIds);
 
     int selectCartProductCountByUserId(Integer userId);
+
+    List<Cart> selectCheckedCartByUserId(Integer userId);
+
+    int brenchDeleteCartByCartId(@Param("cartList") List<Cart> cartList);
 }

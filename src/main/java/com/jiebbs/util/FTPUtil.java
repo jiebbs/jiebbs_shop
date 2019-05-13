@@ -95,7 +95,7 @@ public class FTPUtil {
      * @return 上传文件是否成功
      */
     private boolean uploadFiles(String remotePath,List<File> fileList){
-        boolean uploaded = true;
+        boolean uploaded = false;
         FileInputStream fileInputStream = null;
 
         //连接FTP服务器
