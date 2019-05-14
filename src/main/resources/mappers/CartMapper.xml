@@ -163,7 +163,8 @@
     from mmall_cart
     where id in
     <foreach collection="cartList" item="cart" index="index" open="(" separator="," close=")">
-        #{item.id}
+        #{cart.id}
     </foreach>
   </delete>
+
 </mapper>

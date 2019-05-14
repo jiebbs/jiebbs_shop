@@ -11,6 +11,14 @@ import java.util.Map;
  */
 public interface IOrderService {
 
+    ServerResponse createOrder(Integer userId,Integer shippingId);
+
+    ServerResponse cancelOrder(Integer userId,Long orderNo);
+
+    ServerResponse getOrderCartProduct(Integer userId);
+
+    ServerResponse getOrderDetail(Integer userId,Long orderNo);
+
     ServerResponse pay(Integer userId, Long orderNo, String path);
 
     ServerResponse alipayCallback(Map<String,String> covertDateMap);

@@ -104,6 +104,20 @@ public class Const {
         public void setCode(int code) {
             this.code = code;
         }
+
+        /**
+         * 根据传入的code返回对应的文字描述
+         * @param code
+         * @return
+         */
+        public static String getOrderStatusEnumDesc(Integer code){
+            for(OrderStatusEnum orderStatusEnum:values()){
+                if(orderStatusEnum.getCode() == code){
+                    return orderStatusEnum.getValue();
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -172,6 +186,20 @@ public class Const {
 
         public void setDesc(String desc) {
             this.desc = desc;
+        }
+
+        /**
+         * 根据传入的code返回对应的文字描述
+         * @param code
+         * @return
+         */
+        public static String getPaymentTypeEnumDesc(Integer code){
+            for(PaymentTypeEnum paymentTypeEnum:values()){
+                if(paymentTypeEnum.getCode() == code){
+                    return paymentTypeEnum.getDesc();
+                }
+            }
+            return null;
         }
     }
 }

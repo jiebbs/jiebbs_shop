@@ -1,6 +1,5 @@
 package com.jiebbs.controller.portal;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.jiebbs.common.Const;
 import com.jiebbs.common.ResponseCode;

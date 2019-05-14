@@ -17,6 +17,12 @@ public class OrderServiceTest {
     private IOrderService iOrderService;
 
     @Test
+    public void createOrderTest(){
+        ServerResponse resp = iOrderService.createOrder(1,29);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
     public void payTest(){
         ServerResponse resp = iOrderService.pay(1,1491753014256L,"upload");
         JsonUtil.convert2JsonAndPrint(resp);

@@ -30,7 +30,7 @@
     delete from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.jiebbs.pojo.OrderItem" >
+  <insert id="insert" parameterType="com.jiebbs.pojo.OrderItem">
     insert into mmall_order_item (id, user_id, order_no, 
       product_id, product_name, product_image, 
       current_unit_price, quantity, total_price, 
@@ -173,7 +173,7 @@
   </select>
   
     
-  <insert id="brenchInsertOrderItem" parameterType="list">
+  <insert id="brenchInsertOrderItem" parameterType="list" >
     insert into mmall_order_item (id, user_id, order_no,
       product_id, product_name, product_image,
       current_unit_price, quantity, total_price,
@@ -187,4 +187,11 @@
         )
     </foreach>
   </insert>
+  
+  <delete id="deleteByUserIdOrderNo" parameterType="map">
+    delete
+    from mmall_order_item
+    where user_id = #{userId}
+    and order_no = #{orderNo}
+  </delete>
 </mapper>

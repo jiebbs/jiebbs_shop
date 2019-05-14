@@ -32,4 +32,5 @@ public interface CartMapper {
     List<Cart> selectCheckedCartByUserId(Integer userId);
 
     int brenchDeleteCartByCartId(@Param("cartList") List<Cart> cartList);
+
 }

@@ -21,4 +21,6 @@ public interface OrderItemMapper {
     List<OrderItem> selectByUserIdOrderNo(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
 
     int brenchInsertOrderItem(@Param("orderItemList") List<OrderItem> orderItemList);
+
+    int deleteByUserIdOrderNo(@Param("userId") Integer userId,@Param("orderNo")Long orderNo);
 }

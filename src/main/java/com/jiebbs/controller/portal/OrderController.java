@@ -37,6 +37,12 @@ public class OrderController {
     @Resource(name="iOrderService")
     private IOrderService iOrderService;
 
+    /**
+     * 创建订单接口
+     * @param session
+     * @param shippingId
+     * @return
+     */
     @RequestMapping(value = "create_order.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse createOrder(HttpSession session,Integer shippingId){
@@ -46,17 +52,59 @@ public class OrderController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
         }
 
-        return null;
+        return iOrderService.createOrder(user.getId(),shippingId);
     }
 
+    /**
+     * 取消订单接口
+     * @param session
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "cancel_order.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse cancelOrder(HttpSession session,Long orderNo){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
+        }
+        return iOrderService.cancelOrder(user.getId(),orderNo);
+    }
 
+    /**
+     * 查看产生的订单的产品预览接口
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "get_order_cart_product.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getOrderCartProduct(HttpSession session){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
+        }
 
+        return iOrderService.getOrderCartProduct(user.getId());
+    }
 
-
-
-
-
-
+    /**
+     * 订单物品详情接口
+     * @param session
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "get_order_detail.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getOrderDetail(HttpSession session,Long orderNo){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
+        }
+        return iOrderService.getOrderDetail(user.getId(),orderNo);
+    }
 
     /**
      * 订单支付接口
