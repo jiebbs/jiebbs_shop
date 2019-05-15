@@ -171,8 +171,14 @@
     where user_id = #{userId}
     and order_no = #{orderNo}
   </select>
-  
-    
+
+  <select id="selectByOrderNo" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_order_item
+    where order_no = #{orderNo}
+  </select>
+
   <insert id="brenchInsertOrderItem" parameterType="list" >
     insert into mmall_order_item (id, user_id, order_no,
       product_id, product_name, product_image,

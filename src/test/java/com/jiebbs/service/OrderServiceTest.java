@@ -23,6 +23,24 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void cancelOrderTest(){
+        ServerResponse resp = iOrderService.cancelOrder(1,1491830695216L);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getOrderCartProductTest(){
+        ServerResponse resp = iOrderService.getOrderCartProduct(1);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
+    public void getOrderDetail(){
+        ServerResponse resp = iOrderService.getOrderDetail(1,1491830695216L);
+        JsonUtil.convert2JsonAndPrint(resp);
+    }
+
+    @Test
     public void payTest(){
         ServerResponse resp = iOrderService.pay(1,1491753014256L,"upload");
         JsonUtil.convert2JsonAndPrint(resp);

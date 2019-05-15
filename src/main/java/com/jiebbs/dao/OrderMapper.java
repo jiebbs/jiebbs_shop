@@ -3,6 +3,8 @@ package com.jiebbs.dao;
 import com.jiebbs.pojo.Order;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -21,4 +23,10 @@ public interface OrderMapper {
     Order selectByOrderNo(Long orderNo);
 
     int deleteByUserIdOrderNo(@Param("userId")Integer userId,@Param("orderNo")Long orderNo);
+
+    List<Order> selectAllByUserId(Integer userId);
+
+    List<Order> selectAll();
+
+
 }

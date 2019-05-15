@@ -1,5 +1,6 @@
 package com.jiebbs.service;
 
+import com.github.pagehelper.PageInfo;
 import com.jiebbs.common.ServerResponse;
 
 import java.util.Map;
@@ -19,9 +20,15 @@ public interface IOrderService {
 
     ServerResponse getOrderDetail(Integer userId,Long orderNo);
 
+    ServerResponse getBackendOrderDetail(Long orderNo);
+
+    ServerResponse<PageInfo> getOrderList(Integer userId, Integer pageSize, Integer pageNum);
+
     ServerResponse pay(Integer userId, Long orderNo, String path);
 
     ServerResponse alipayCallback(Map<String,String> covertDateMap);
 
     ServerResponse<Boolean> queryOrderPayStatus(Integer userId,Long orderNo);
+
+    ServerResponse send(Long orderNo);
 }

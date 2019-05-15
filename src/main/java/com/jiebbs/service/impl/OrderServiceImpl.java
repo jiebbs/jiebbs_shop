@@ -11,6 +11,8 @@ import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jiebbs.common.Const;
@@ -88,8 +90,10 @@ public class OrderServiceImpl implements IOrderService {
         int orderResult = orderMapper.insert(order);
         if(orderResult>0){
             //对orderItem插入订单号
+            //为了获取订单创建时间重新搜索获取订单
+            Order newOrder = orderMapper.selectByUserIdOrderNo(userId,order.getOrderNo());
             for(OrderItem orderItem:orderItemList){
-                orderItem.setOrderNo(order.getOrderNo());
+                orderItem.setOrderNo(newOrder.getOrderNo());
                 //更新orderItem到数据表
             }
             //mybatis批量插入数据库
@@ -99,8 +103,11 @@ public class OrderServiceImpl implements IOrderService {
                 this.reduceProductStock(orderItemList);
                 //清空购物车
                 cartMapper.brenchDeleteCartByCartId(cartList);
+                //查询插入到订单物品表的数据
+                //因为原有的OrderItem并没有创建时间，需要重新从数据库获取
+                List<OrderItem> newOrderItemList = orderItemMapper.selectByUserIdOrderNo(userId,newOrder.getOrderNo());
                 //组装返回订单明细
-                OrderVO orderVO = this.assembleOrderVO(order,orderItemList);
+                OrderVO orderVO = this.assembleOrderVO(newOrder,newOrderItemList);
 
                 return ServerResponse.createBySuccessMessageAndData("商品数据插入成功",orderVO);
             }else{
@@ -124,7 +131,7 @@ public class OrderServiceImpl implements IOrderService {
             Order cancelOrder = new Order();
             cancelOrder.setId(order.getId());
             cancelOrder.setStatus(Const.OrderStatusEnum.CANCALED.getCode());
-            int updateStatusResult = orderMapper.updateByPrimaryKey(cancelOrder);
+            int updateStatusResult = orderMapper.updateByPrimaryKeySelective(cancelOrder);
             return updateStatusResult>0?ServerResponse.createBySuccessMessage("订单取消成功"):
                     ServerResponse.createByErrorMessage("订单取消失败");
         }
@@ -155,6 +162,7 @@ public class OrderServiceImpl implements IOrderService {
             totalPrice = BigDecimalUtil.add(totalPrice,orderItemVO.getTotalPrice());
         }
         orderProductVO.setOrderItemList(orderItemList);
+        orderProductVO.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
         orderProductVO.setTotalPrice(totalPrice.toString());
 
         return ServerResponse.createBySuccessData(orderProductVO);
@@ -172,7 +180,24 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccessData(orderVO);
     }
 
-
+    public ServerResponse<PageInfo> getOrderList(Integer userId,Integer pageSize,Integer pageNum){
+        //开启PageHelper分页
+        PageHelper.startPage(pageNum,pageSize);
+        List<Order> orderList = Lists.newArrayList();
+        if(null!=userId){
+            orderList = orderMapper.selectAllByUserId(userId);
+        }else{
+            //管理员不传入userId查询
+            orderList = orderMapper.selectAll();
+        }
+        if(CollectionUtils.isEmpty(orderList)){
+            return ServerResponse.createBySuccessMessage("查询暂无订单");
+        }
+        //与视频相比感觉如果再封装OrderVO就变成一个详情页列表了，若有不按照视频处理，只是简单返回一个Order的list即可
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderList);
+        return ServerResponse.createBySuccessMessageAndData("查询订单成功",pageInfo);
+    }
 
 
     public ServerResponse pay(Integer userId,Long orderNo,String path){
@@ -182,6 +207,8 @@ public class OrderServiceImpl implements IOrderService {
         Order order = orderMapper.selectByUserIdOrderNo(userId,orderNo);
         if(null == order){
             return ServerResponse.createByErrorMessage("该订单不存在或已删除");
+        }else if(order.getStatus()!=Const.OrderStatusEnum.NO_PAY.getCode()){
+            return ServerResponse.createByErrorMessage("订单非未支付状态，请查看订单状态重新申请支付");
         }
         //查询到订单将订单号存入map
         resultMap.put("orderNo",String.valueOf(order.getOrderNo()));
@@ -228,10 +255,10 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId,orderNo);
         if(CollectionUtils.isNotEmpty(orderItemList)){
             for(OrderItem orderItem:orderItemList){
-            // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
-            //        GoodsDetail goods1 = GoodsDetail.newInstance("goods_id001", "xxx小面包", 1000, 1);
-            // 创建好一个商品后添加至商品明细列表
-            //        goodsDetailList.add(goods1);
+                // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
+                //        GoodsDetail goods1 = GoodsDetail.newInstance("goods_id001", "xxx小面包", 1000, 1);
+                // 创建好一个商品后添加至商品明细列表
+                //        goodsDetailList.add(goods1);
                 GoodsDetail goods = GoodsDetail.newInstance(orderItem.getId().toString(),orderItem.getProductName(),orderItem.getCurrentUnitPrice().longValue() ,orderItem.getQuantity());
                 goodsDetailList.add(goods);
             }
@@ -242,7 +269,7 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         Configs.init("zfbinfo.properties");
@@ -372,7 +399,7 @@ public class OrderServiceImpl implements IOrderService {
                 //校验库存
                 //若大于库存则修改为库存数量
                 if(cart.getQuantity()>=product.getStock()){
-                   return ServerResponse.createByErrorMessage("产品"+product.getName()+"库存不足");
+                    return ServerResponse.createByErrorMessage("产品"+product.getName()+"库存不足");
                 }
                 orderItem.setUserId(userId);
                 orderItem.setProductId(product.getId());
@@ -388,6 +415,56 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createByErrorMessage("未勾选产品，请勾选产品后再次提交订单");
         }
     }
+
+
+
+    //backend
+    public ServerResponse getBackendOrderDetail(Long orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(null==order){
+            return ServerResponse.createByErrorMessage("查询用户无此订单");
+        }
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+        //组装orderVO
+        OrderVO orderVO = this.assembleOrderVO(order,orderItemList);
+        return ServerResponse.createBySuccessData(orderVO);
+    }
+
+
+    public ServerResponse searchOrder(Long orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(null==order){
+            return ServerResponse.createByErrorMessage("查询用户无此订单");
+        }
+        return ServerResponse.createBySuccessData(order);
+    }
+
+    public ServerResponse sendGoods(Long orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(null==order){
+            return ServerResponse.createByErrorMessage("查询用户无此订单");
+        }
+        //判断订单是否已发货或者已取消
+        if(order.getStatus()<Const.OrderStatusEnum.SHIPPED.getCode()&&order.getStatus()!=Const.OrderStatusEnum.CANCALED.getCode()){
+            Order newOrder = new Order();
+            newOrder.setId(order.getId());
+            newOrder.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+            newOrder.setSendTime(new Date());
+            //更新订单状态
+            int sendResult = orderMapper.updateByPrimaryKeySelective(newOrder);
+            if(sendResult>0){
+                return ServerResponse.createBySuccessMessage("发货成功");
+            }
+            return ServerResponse.createByErrorMessage("发货异常");
+        }
+        return ServerResponse.createBySuccessData(order);
+    }
+
+
+
+
+
+
 
     /**
      * 组装订单详情的值对象

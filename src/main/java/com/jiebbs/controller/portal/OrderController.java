@@ -9,11 +9,13 @@ import com.jiebbs.common.ResponseCode;
 import com.jiebbs.common.ServerResponse;
 import com.jiebbs.pojo.User;
 import com.jiebbs.service.IOrderService;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -104,6 +106,26 @@ public class OrderController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
         }
         return iOrderService.getOrderDetail(user.getId(),orderNo);
+    }
+
+    /**
+     * 获取订单列表接口
+     * @param session
+     * @param pageSize
+     * @param pageNum
+     * @return
+     */
+    @RequestMapping(value = "get_order_list.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getOrderList(HttpSession session,
+                                       @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,
+                                       @RequestParam(value = "pageSize",defaultValue = "1") Integer pageNum){
+        //校验用户登录
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(null==user) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,需要进行登录");
+        }
+        return iOrderService.getOrderList(pageNum,pageSize,user.getId());
     }
 
     /**
